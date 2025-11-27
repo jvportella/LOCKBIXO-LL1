@@ -96,11 +96,11 @@ def main():
             st_fmt = '[' + ', '.join(reversed(st)) + ']'
             print(f"  {st_fmt:40s}  X={X:14s}  lookahead={la}")
         if accepted:
-            print("\n✅ Cadeia aceita (parse concluído sem erros).")
+            print("\nCadeia aceita (parse concluído sem erros).")
         else:
-            print("\n❌ Cadeia NÃO aceita.")
+            print("\nCadeia NÃO aceita.")
     except ParserError as e:
-        print(f"\n❌ Erro sintático: {e}")
+        print(f"\nErro sintático: {e}")
 
 if __name__ == '__main__':
     main()

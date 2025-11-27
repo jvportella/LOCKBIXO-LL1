@@ -1,0 +1,29 @@
+int acc;
+
+int incSeMaior(int v, int limite) {
+    if (v > limite) { return v + 1; } else { return v; }
+}
+
+void debugValor(int v, boolean liga) {
+    if (liga) { write("dbg\n"); }
+    return;
+}
+
+acc = 0;
+
+for (acc = 0; acc < 10; acc = acc + 1) {
+    acc = incSeMaior(acc, 3);
+    debugValor(acc, (acc != 0) && !(acc == 5));
+}
+
+do {
+    acc = acc - 1;
+} while (acc > 0);
+
+while (acc < 3) {
+    acc = acc + 1;
+}
+
+if ((acc <= 3) && (acc >= 1)) { write("range ok\n"); } else { write("fora\n"); }
+
+void main() { return; }

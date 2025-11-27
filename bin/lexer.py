@@ -1,11 +1,3 @@
-# executaveis/lexer.py
-# Scanner por regex alinhado aos tokens esperados pelo parser.
-# Ajustes principais:
-#  - STRING aceita escapes: r'"([^"\\]|\\.)*"'
-#  - Ordem: operadores de 2 chars antes dos de 1 char
-#  - WS inclui \r (Windows)
-#  - Comentário de bloco com DOTALL
-
 import re
 from .tokens import Token  # Token(kind, lexeme, line, col)
 
