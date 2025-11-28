@@ -1,9 +1,11 @@
-from typing import Dict, List, Set
+from typing import Dict, List, Set, Callable
 from .grammar import EPS
 
 def compute_first_follow(G, NONTERMS: List[str], TERMS: List[str], START_SYMBOL: str):
+    terms = [t for t in TERMS if t != 'EOF']
+
     FIRST: Dict[str, Set[str]] = {A: set() for A in NONTERMS}
-    for t in TERMS:
+    for t in terms:
         FIRST[t] = {t}
     FIRST[EPS] = {EPS}
 
@@ -12,18 +14,25 @@ def compute_first_follow(G, NONTERMS: List[str], TERMS: List[str], START_SYMBOL:
         if not alpha:
             res.add(EPS)
             return res
+
         for X in alpha:
             if X == EPS:
                 res.add(EPS)
-                break
-            if X in FIRST and FIRST[X] == {X}:  # terminal
+                return res
+
+            if X in terms:
                 res.add(X)
-                break
-            res.update(s for s in FIRST[X] if s != EPS)
+                return res
+
+            if X == 'EOF':
+                return res
+
+            res.update(FIRST[X] - {EPS})
+
             if EPS not in FIRST[X]:
-                break
-        else:
-            res.add(EPS)
+                return res
+
+        res.add(EPS)
         return res
 
     changed = True
@@ -45,21 +54,29 @@ def compute_first_follow(G, NONTERMS: List[str], TERMS: List[str], START_SYMBOL:
         changed = False
         for A in NONTERMS:
             for prod in G[A]:
-                trailer = FOLLOW[A].copy()
+                trailer = set(FOLLOW[A])
                 for X in reversed(prod):
                     if X in NONTERMS:
                         before = len(FOLLOW[X])
                         FOLLOW[X].update(trailer)
                         if len(FOLLOW[X]) != before:
                             changed = True
-                        # Atualiza trailer
-                        alpha_first = FIRST[X]
-                        if EPS in alpha_first:
-                            trailer = trailer.union(alpha_first - {EPS})
+
+                        if EPS in FIRST[X]:
+                            trailer = trailer.union(FIRST[X] - {EPS})
                         else:
-                            trailer = alpha_first - {EPS}
+                            trailer = FIRST[X] - {EPS}
+
+                    elif X in terms:
+                        trailer = {X}
+
+                    elif X == EPS:
+                        continue
+
+                    elif X == 'EOF':
+                        trailer = {'EOF'}
+
                     else:
-                        # terminal
-                        trailer = FIRST[X] - {EPS} if X in FIRST else {X}
+                        trailer = {X}
 
     return FIRST, FOLLOW, first_of_sequence
